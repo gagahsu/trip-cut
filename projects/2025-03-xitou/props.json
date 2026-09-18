@@ -5,8 +5,8 @@
   "height": 1920,
   "durationInFrames": 1950,
   "bgm": {
-    "src": "bgm/bgm.mp3",
-    "volume": 0.25,
+    "src": "bgm/carefree.mp3",
+    "volume": 1.0,
     "duckUnderSpeech": true
   },
   "clips": [

@@ -1,7 +1,7 @@
 {
   "project": "2025-03-xitou",
   "output": {"aspect": "9:16", "fps": 30, "target_duration": 60},
-  "bgm": {"path": "raw/bgm.mp3", "volume": 0.25, "duck_under_speech": true},
+  "bgm": {"path": "work/bgm/carefree.mp3", "volume": 1.0, "duck_under_speech": true},
   "clips": [
     {"seq": 1, "source": "v010", "in": 3.0, "out": 6.5, "keep_audio": true,
      "title": {"text": "2025.03.16 · 溪頭", "style": "center"}, "transition_out": "crossfade"},
