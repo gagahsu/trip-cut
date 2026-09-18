@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "trip-cut manifest",
+  "type": "object",
+  "required": ["project", "generated_at", "items"],
+  "properties": {
+    "project": {"type": "string"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "path", "taken_at", "width", "height"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[pv][0-9]{3,}$"},
+          "type": {"enum": ["photo", "video"]},
+          "path": {"type": "string"},
+          "converted_path": {"type": "string"},
+          "taken_at": {"type": "string"},
+          "gps": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2},
+          "width": {"type": "integer"},
+          "height": {"type": "integer"},
+          "rotation": {"type": "integer"},
+          "duration": {"type": "number"},
+          "fps": {"type": "number"},
+          "has_audio": {"type": "boolean"}
+        }
+      }
+    }
+  }
+}

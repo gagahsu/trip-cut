@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "kinocut": {
+      "command": "kinocut",
+      "args": ["mcp"],
+      "_note": "TODO Phase 0：依 https://github.com/KyaniteLabs/kinocut README 確認正確的 MCP 啟動指令與參數後更新此處"
+    }
+  }
+}
