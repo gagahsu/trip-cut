@@ -36,6 +36,15 @@
           "in": {"type": "number", "description": "video 取用起點（秒）"},
           "out": {"type": "number", "description": "video 取用終點（秒）"},
           "keep_audio": {"type": "boolean"},
+          "audio_override": {
+            "type": "object",
+            "description": "用另一支影片的聲音蓋在這段畫面上（例如小孩視角：畫面用 330s、聲音用 150s 的對話）",
+            "required": ["source", "in"],
+            "properties": {
+              "source": {"type": "string"},
+              "in": {"type": "number", "description": "聲音來源的起點（秒），長度跟畫面一樣"}
+            }
+          },
           "crop": {"description": "center|left|right 或 0..1 的 x 焦點", "anyOf": [{"enum": ["center", "left", "right"]}, {"type": "number", "minimum": 0, "maximum": 1}]},
           "effect": {"enum": ["none", "kenburns"]},
           "kenburns": {
