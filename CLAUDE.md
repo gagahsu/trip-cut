@@ -25,10 +25,10 @@
 
 ## 3. 技術棧（已定案）
 
-- 執行環境：**WSL2 (Ubuntu)** 為主；Windows 端只負責放素材與看成品。
+- 執行環境：**Windows 原生**（見 ADR-007，已推翻先前 WSL2 的預設假設）；不用 WSL2。
 - 語言：Python 3.11+（編排、分析）、Node.js 22+ / TypeScript（Remotion 渲染層）。
-- 分析：`ffmpeg`/`ffprobe`、`exiftool`、`faster-whisper`（GPU 等級不高 → 預設 `small` 模型、`int8_float16`）。
-- 剪輯執行：**Kinocut**（MCP server，包 FFmpeg）。
+- 分析：`ffmpeg`/`ffprobe`、`exiftool`、`faster-whisper`（GPU 等級不高 → 預設 `small` 模型、`int8_float16`；CUDA 走 Windows 原生 `nvidia-cublas-cu12`/`nvidia-cudnn-cu12`，失敗自動退 CPU）。
+- 剪輯執行：**Kinocut**（MCP server，包 FFmpeg；官方原生支援 Windows）。
 - 渲染／轉場／字卡：**Remotion**，JSON-props 驅動的 `Montage` composition（架構參考 `chrix911/maintain-video` 的單一 props 檔模式）。
 - 快速備援：`Trekky12/kburns-slideshow`（純 FFmpeg Ken Burns），Remotion 未就緒時可先出片。
 - 語音旁白（可選）：`edge-tts`（zh-TW 聲音，同時輸出 mp3 + srt）。
@@ -42,7 +42,7 @@ trip-cut/
 ├── docs/
 │   ├── ARCHITECTURE.md      系統架構與資料流
 │   ├── PIPELINE.md          四階段詳細規格、每階段的輸入輸出與指令
-│   ├── SETUP.md             WSL2 環境安裝（含 GPU）
+│   ├── SETUP.md             Windows 原生環境安裝（含 GPU）
 │   ├── TASKS.md             分階段待辦（開工前必讀）
 │   ├── DECISIONS.md         ADR：為什麼選這些工具
 │   └── REFERENCES.md        外部工具與參考專案連結
@@ -84,9 +84,11 @@ tripcut frames  projects/<trip>          # 抽幀 + contact sheet
 tripcut transcribe projects/<trip>       # 有人聲的影片才跑
 # ---- 情境 B：Claude 讀 contact sheet + transcript + manifest → 寫 script.md 草稿，停下等確認 ----
 # ---- 情境 A/B：Claude 依 script.md 產 edl.json ----
-tripcut edl-validate projects/<trip>     # 對 schema 驗證、檢查時間碼不越界
-tripcut props projects/<trip>            # edl.json → props.json
-# ---- 渲染：Remotion（主）或 kburns（備援）；後製／轉檔／品檢：Kinocut MCP ----
+tripcut edl-validate projects/<trip>     # 對 schema 驗證、檢查時間碼不越界（--edl edl-120.json 可指定版本）
+tripcut clips projects/<trip>            # Kinocut 預裁每段到 work/clips/（先跑，props 才會指向預裁檔）
+tripcut props projects/<trip>            # edl.json → props.json，並把用到的檔 hard link 到 work/public/
+# ---- 渲染：cd remotion && npx remotion render Montage <out.mp4> --props=<props.json> --public-dir=<專案>/work/public ----
+# ---- 後製／轉檔／品檢：Kinocut MCP（或 kino CLI） ----
 ```
 
 Claude 在每個階段完成後回報：產物路徑、發現的問題、下一步需要使用者做什麼。

@@ -30,3 +30,15 @@
 - 決策：trip-cut（情境 A/B）與 info-shorts（情境 3）分開。
 - 理由：輸入型態、觸發方式、風格系統都不同；共用的只有 Kinocut/Remotion/edge-tts 這類外部工具，不需要共用程式碼。
 - 後果：若之後出現重複程式（例如 Remotion 字幕層），再抽成共用 npm/pip 套件。
+
+## ADR-007 2026-09-18 執行環境改為 Windows 原生，不用 WSL2
+- 決策：推翻 ADR 前的預設假設（`docs/SETUP.md` 原版全走 WSL2），改成整條 pipeline（`tripcut` CLI、Kinocut MCP、Remotion、faster-whisper、edge-tts）直接在 Windows 原生環境跑，不透過 WSL2。
+- 理由：
+  1. 使用者 Windows 端已經有 `ffmpeg`，且逐一確認 exiftool、Kinocut（1.15.1，官方支援 macOS/Linux/**Windows**，只要 FFmpeg 在 PATH 上）、Remotion（headless Chrome 在 Windows 上會抓 Windows 版，不需要 WSL2 SETUP.md 列的那堆 Linux-only apt lib）、faster-whisper（ctranslate2 有官方 Windows wheel，CUDA 透過 `nvidia-cublas-cu12`/`nvidia-cudnn-cu12` 這兩個 pip 套件即可）、edge-tts 全部都原生支援 Windows。
+  2. GPU 不是決定性因素：驅動裝在 Windows 上，WSL2 是透傳、Windows 原生是直接存取，兩邊 faster-whisper 都能吃到 CUDA，效能差異不大。
+  3. 兩套環境（WSL2 + Windows）等於要重複安裝 Python/Node/ffmpeg/edge-tts 兩份，浪費磁碟空間也容易版本不同步；使用者明確不想要這種重複。
+- 後果：
+  - `docs/SETUP.md` 全面改寫成 PowerShell 指令；不再需要 `sudo apt install`、WSL2 distro、`/mnt/c` 路徑問題。
+  - `CLAUDE.md` §3 技術棧「執行環境」改為 Windows 原生。
+  - 素材與程式碼都在同一個 Windows 檔案系統路徑下，不再有「/mnt/c 下跑很慢」的顧慮。
+  - 若之後真的需要 Linux-only 工具（目前沒有），再開新 ADR 評估要不要局部借 WSL2。

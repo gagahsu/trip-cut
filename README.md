@@ -4,7 +4,7 @@
 
 ## 快速開始
 
-1. 依 `docs/SETUP.md` 完成 WSL2 環境。
+1. 依 `docs/SETUP.md` 完成 Windows 原生環境（ffmpeg／exiftool／Node／uv／Kinocut）。
 2. 建立旅行專案：`mkdir -p projects/2026-10-okinawa/raw`，把照片影片丟進 `raw/`。
 3. 在 repo 根目錄開 Claude Code，說：「幫我處理 projects/2026-10-okinawa，我沒有腳本」（或「腳本在 script.md」）。
 4. 依 `CLAUDE.md` §5 的流程跑到成品。
