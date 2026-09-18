@@ -1,0 +1,343 @@
+{
+  "project": "2025-03-xitou",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "durationInFrames": 1950,
+  "bgm": {
+    "src": "bgm/bgm.mp3",
+    "volume": 0.25,
+    "duckUnderSpeech": true
+  },
+  "clips": [
+    {
+      "seq": 1,
+      "source": "v010",
+      "type": "video",
+      "startFrame": 0,
+      "durationInFrames": 105,
+      "srcWidth": 1536,
+      "srcHeight": 2720,
+      "transitionOut": "crossfade",
+      "fadeInFrames": 0,
+      "src": "clips/v010_0003.00-0006.50.mp4",
+      "inFrame": 0,
+      "precut": true,
+      "keepAudio": true,
+      "cropX": 0.5,
+      "title": {
+        "text": "2025.03.16 · 溪頭",
+        "style": "center"
+      },
+      "overlapFrames": 15
+    },
+    {
+      "seq": 2,
+      "source": "p002",
+      "type": "photo",
+      "startFrame": 90,
+      "durationInFrames": 75,
+      "srcWidth": 2250,
+      "srcHeight": 4000,
+      "transitionOut": "crossfade",
+      "fadeInFrames": 15,
+      "src": "photos/IMG_20250316_112602_00_005.jpg",
+      "effect": "kenburns",
+      "kenburns": {
+        "from": [
+          0.45,
+          0.6,
+          1.0
+        ],
+        "to": [
+          0.45,
+          0.55,
+          1.12
+        ]
+      },
+      "title": {
+        "text": "下雨天，也要出門",
+        "style": "lower-third"
+      },
+      "overlapFrames": 15
+    },
+    {
+      "seq": 3,
+      "source": "v002",
+      "type": "video",
+      "startFrame": 150,
+      "durationInFrames": 90,
+      "srcWidth": 1536,
+      "srcHeight": 2720,
+      "transitionOut": "cut",
+      "fadeInFrames": 15,
+      "src": "clips/v002_0009.50-0012.50.mp4",
+      "inFrame": 0,
+      "precut": true,
+      "keepAudio": false,
+      "cropX": 0.5
+    },
+    {
+      "seq": 4,
+      "source": "v003",
+      "type": "video",
+      "startFrame": 240,
+      "durationInFrames": 180,
+      "srcWidth": 1536,
+      "srcHeight": 2720,
+      "transitionOut": "cut",
+      "fadeInFrames": 0,
+      "src": "clips/v003_0042.00-0048.00.mp4",
+      "inFrame": 0,
+      "precut": true,
+      "keepAudio": true,
+      "cropX": 0.5
+    },
+    {
+      "seq": 5,
+      "source": "v005",
+      "type": "video",
+      "startFrame": 420,
+      "durationInFrames": 150,
+      "srcWidth": 1536,
+      "srcHeight": 2720,
+      "transitionOut": "cut",
+      "fadeInFrames": 0,
+      "src": "clips/v005_0000.00-0005.00.mp4",
+      "inFrame": 0,
+      "precut": true,
+      "keepAudio": true,
+      "cropX": 0.5,
+      "title": {
+        "text": "木頭恐龍",
+        "style": "chapter"
+      }
+    },
+    {
+      "seq": 6,
+      "source": "v004",
+      "type": "video",
+      "startFrame": 570,
+      "durationInFrames": 90,
+      "srcWidth": 1536,
+      "srcHeight": 2720,
+      "transitionOut": "crossfade",
+      "fadeInFrames": 0,
+      "src": "clips/v004_0047.00-0050.00.mp4",
+      "inFrame": 0,
+      "precut": true,
+      "keepAudio": true,
+      "cropX": 0.5,
+      "overlapFrames": 15
+    },
+    {
+      "seq": 7,
+      "source": "v007",
+      "type": "video",
+      "startFrame": 645,
+      "durationInFrames": 180,
+      "srcWidth": 1536,
+      "srcHeight": 2720,
+      "transitionOut": "crossfade",
+      "fadeInFrames": 15,
+      "src": "clips/v007_0330.00-0336.00.mp4",
+      "inFrame": 0,
+      "precut": true,
+      "keepAudio": false,
+      "cropX": 0.5,
+      "audioOverride": {
+        "src": "clips/v007_0150.00-0156.00_audio.mp4",
+        "inFrame": 0
+      },
+      "title": {
+        "text": "奈奈視角",
+        "style": "chapter"
+      },
+      "overlapFrames": 15
+    },
+    {
+      "seq": 8,
+      "source": "v010",
+      "type": "video",
+      "startFrame": 810,
+      "durationInFrames": 120,
+      "srcWidth": 1536,
+      "srcHeight": 2720,
+      "transitionOut": "cut",
+      "fadeInFrames": 15,
+      "src": "clips/v010_0273.00-0277.00.mp4",
+      "inFrame": 0,
+      "precut": true,
+      "keepAudio": true,
+      "cropX": 0.5
+    },
+    {
+      "seq": 9,
+      "source": "v010",
+      "type": "video",
+      "startFrame": 930,
+      "durationInFrames": 120,
+      "srcWidth": 1536,
+      "srcHeight": 2720,
+      "transitionOut": "cut",
+      "fadeInFrames": 0,
+      "src": "clips/v010_0441.00-0445.00.mp4",
+      "inFrame": 0,
+      "precut": true,
+      "keepAudio": true,
+      "cropX": 0.5,
+      "title": {
+        "text": "達達",
+        "style": "lower-third"
+      }
+    },
+    {
+      "seq": 10,
+      "source": "v008",
+      "type": "video",
+      "startFrame": 1050,
+      "durationInFrames": 105,
+      "srcWidth": 2720,
+      "srcHeight": 1536,
+      "transitionOut": "cut",
+      "fadeInFrames": 0,
+      "src": "clips/v008_0045.00-0048.50.mp4",
+      "inFrame": 0,
+      "precut": true,
+      "keepAudio": false,
+      "cropX": 0.5,
+      "title": {
+        "text": "奈奈",
+        "style": "lower-third"
+      }
+    },
+    {
+      "seq": 11,
+      "source": "v009",
+      "type": "video",
+      "startFrame": 1155,
+      "durationInFrames": 105,
+      "srcWidth": 2720,
+      "srcHeight": 1536,
+      "transitionOut": "crossfade",
+      "fadeInFrames": 0,
+      "src": "clips/v009_0061.00-0064.50.mp4",
+      "inFrame": 0,
+      "precut": true,
+      "keepAudio": false,
+      "cropX": 0.5,
+      "overlapFrames": 15
+    },
+    {
+      "seq": 12,
+      "source": "v010",
+      "type": "video",
+      "startFrame": 1245,
+      "durationInFrames": 120,
+      "srcWidth": 1536,
+      "srcHeight": 2720,
+      "transitionOut": "crossfade",
+      "fadeInFrames": 15,
+      "src": "clips/v010_0901.00-0905.00.mp4",
+      "inFrame": 0,
+      "precut": true,
+      "keepAudio": true,
+      "cropX": 0.5,
+      "title": {
+        "text": "起霧了",
+        "style": "chapter"
+      },
+      "overlapFrames": 15
+    },
+    {
+      "seq": 13,
+      "source": "v012",
+      "type": "video",
+      "startFrame": 1350,
+      "durationInFrames": 105,
+      "srcWidth": 1536,
+      "srcHeight": 2720,
+      "transitionOut": "cut",
+      "fadeInFrames": 15,
+      "src": "clips/v012_0000.00-0003.50.mp4",
+      "inFrame": 0,
+      "precut": true,
+      "keepAudio": true,
+      "cropX": 0.5,
+      "title": {
+        "text": "妖怪村",
+        "style": "chapter"
+      }
+    },
+    {
+      "seq": 14,
+      "source": "v013",
+      "type": "video",
+      "startFrame": 1455,
+      "durationInFrames": 90,
+      "srcWidth": 1536,
+      "srcHeight": 2720,
+      "transitionOut": "crossfade",
+      "fadeInFrames": 0,
+      "src": "clips/v013_0087.00-0090.00.mp4",
+      "inFrame": 0,
+      "precut": true,
+      "keepAudio": false,
+      "cropX": 0.5,
+      "overlapFrames": 15
+    },
+    {
+      "seq": 15,
+      "source": "v017",
+      "type": "video",
+      "startFrame": 1530,
+      "durationInFrames": 150,
+      "srcWidth": 1536,
+      "srcHeight": 2720,
+      "transitionOut": "cut",
+      "fadeInFrames": 15,
+      "src": "clips/v017_0050.00-0055.00.mp4",
+      "inFrame": 0,
+      "precut": true,
+      "keepAudio": true,
+      "cropX": 0.5
+    },
+    {
+      "seq": 16,
+      "source": "v018",
+      "type": "video",
+      "startFrame": 1680,
+      "durationInFrames": 120,
+      "srcWidth": 1536,
+      "srcHeight": 2720,
+      "transitionOut": "cut",
+      "fadeInFrames": 0,
+      "src": "clips/v018_0012.00-0016.00.mp4",
+      "inFrame": 0,
+      "precut": true,
+      "keepAudio": true,
+      "cropX": 0.5
+    },
+    {
+      "seq": 17,
+      "source": "v016",
+      "type": "video",
+      "startFrame": 1800,
+      "durationInFrames": 150,
+      "srcWidth": 1536,
+      "srcHeight": 2720,
+      "transitionOut": "fade-black",
+      "fadeInFrames": 0,
+      "src": "clips/v016_0092.00-0097.00.mp4",
+      "inFrame": 0,
+      "precut": true,
+      "keepAudio": false,
+      "cropX": 0.5,
+      "title": {
+        "text": "2025.03 溪頭",
+        "style": "center"
+      },
+      "fadeOutFrames": 18
+    }
+  ]
+}

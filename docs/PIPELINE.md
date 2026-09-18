@@ -110,16 +110,25 @@ Claude 依定案的 `script.md` 產 `edl.json`（符合 `schemas/edl.schema.json
 - schema 驗證；`source` 必須存在於 manifest；影片 `in/out` 不越界；總長度與 `target_duration` 差距 > 15% 要警告。
 - 直式輸出時，橫向影片必須指定 `crop`（center / left / right / 0..1 的 x 座標）。
 
-`tripcut props`：把 EDL 轉成 Remotion 的 `props.json`（秒 → frame，路徑轉絕對路徑）。
+`tripcut props`：把 EDL 轉成 Remotion 的 `props.json`（秒 → frame）。時間軸在這裡就算好：每段有 `startFrame`，crossfade 讓下一段提早 0.5s 開始並淡入。用到的檔案會 hard link 到 `work/public/{clips,photos,raw,bgm}/`，props 的 src 相對於它；render 時 `--public-dir=<專案>/work/public`（Remotion 的 bundler 會整個複製 public dir、也不能跨 junction，所以不能直接指專案目錄）。
+
+同一專案可以有多個版本：`--edl edl-120.json` → `props-120.json`。
+
+EDL 額外欄位 `audio_override: {source, in}`：畫面用這段、聲音用另一段（例如小孩視角的畫面配上大人的對話）。
+
+`tripcut clips`：把 EDL 裡的影片段落用 Kinocut 預裁成 `work/clips/<id>_<in>-<out>.mp4`（旋轉烤進畫面、長邊 1920），Remotion 只吃預裁檔；`audio_override` 也裁成同長度的小檔。要在 `tripcut props` 之前跑，props 才會指向預裁檔。
 
 ---
 
 ## Stage 5 — 渲染與後製
 
 **Remotion（主）**
-```bash
-cd remotion && npx remotion render src/index.ts Montage ../projects/<trip>/out/<trip>-9x16.mp4 --props=../projects/<trip>/props.json
+```powershell
+cd remotion
+npx remotion render Montage ..\projects\<trip>\out\<trip>-9x16.mp4 --props=..\projects\<trip>\props.json --public-dir=..\projects\<trip>\work\public
+# 16:9 用同一份 props：composition 改成 Montage16x9
 ```
+Composition 的尺寸／長度／fps 都由 props 的 `calculateMetadata` 決定；`Montage16x9` 只是把同一份 props 硬轉 1920x1080（影片 cover crop、照片 Ken Burns 自動重算）。
 
 **kburns-slideshow（備援，Phase 1）**：只吃照片＋簡單順序，用來早期驗證流程。
 
