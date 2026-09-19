@@ -18,7 +18,7 @@
 
 1. **素材絕不離開本機。** 分析只走「FFmpeg 抽幀 + exiftool + faster-whisper → Claude Code 讀圖／讀文字」。不呼叫 Gemini、Mistral 或任何第三方 vision API，即使免費。
 2. **AI Agent 以外一律免費開源。** 新增任何依賴前先確認授權（Remotion 僅限個人／3 人以下免費，見 DECISIONS）。
-3. **Git 不追蹤原始媒體。** `raw/`、`work/`、`out/` 全在 `.gitignore`，只追蹤程式碼、schema、文件與 `script.md`/`edl.json` 等文字產物。
+3. **Git 只放 pipeline，不放單一 trip 的內容。** `projects/` 整個在 `.gitignore` 裡——素材、`manifest.json`、`script.md`、`edl.json`、`props.json`、成品都只存在本機。repo 裡只有程式碼、`schemas/`、`docs/`。單一 trip 的產物只有在**會影響後續影片生成**時才進 repo（例如剪輯模板、可重用的 sample），而且要整理進 `docs/` 或 `schemas/`，不是留在 `projects/` 原地追蹤。
 4. **腳本定案前不渲染。** 情境 B 一定停在 `script.md` 等使用者確認，不可自行進入 EDL 與 render。
 5. **刪除或覆寫使用者檔案前必須詢問。** 包含 `raw/`、`script.md`、`edl.json`。
 6. **剪輯執行只走 Kinocut MCP 或專案內腳本**，不要臨時拼 raw ffmpeg 指令（抽幀、探測等分析用途除外，見 `docs/PIPELINE.md`）。
@@ -59,7 +59,7 @@ trip-cut/
 │   └── cli.py
 ├── remotion/                Remotion 專案（獨立 package.json）
 │   └── src/Montage.tsx      單一 props 檔驅動的主 composition
-├── projects/<trip-name>/    每趟旅行一個資料夾（見下）
+├── projects/<trip-name>/    每趟旅行一個資料夾（整個不進 git，見下）
 ├── .mcp.json                Claude Code 的 MCP 設定（Kinocut）
 └── .gitignore
 ```
@@ -67,14 +67,14 @@ trip-cut/
 每趟旅行：
 
 ```
-projects/2026-10-okinawa/
-├── raw/            使用者放入的原始照片影片（不進 git）
-├── work/           抽幀、contact sheet、transcript（不進 git）
+projects/2026-10-okinawa/          ← 整個資料夾都不進 git（hard rule 3）
+├── raw/            使用者放入的原始照片影片
+├── work/           抽幀、contact sheet、transcript、預裁檔
 ├── manifest.json   ingest 產物
 ├── script.md       腳本（情境 A 使用者提供；情境 B Claude 產草稿）
 ├── edl.json        剪輯決策表（Claude 產生、使用者可改）
-├── props.json      edl → Remotion props
-└── out/            成品（不進 git）
+├── props.json      edl → Remotion props（建置產物，可由 edl 重跑）
+└── out/            成品
 ```
 
 ## 5. 標準工作流程

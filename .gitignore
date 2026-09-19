@@ -1,6 +1,6 @@
-projects/*/raw/
-projects/*/work/
-projects/*/out/
+# 單一 trip 的內容不進 git（素材、分析產物、EDL、props、腳本、成品）。
+# 只有會影響後續影片生成的東西才進 repo，那些放 docs/ 或 schemas/。
+projects/
 *.mp4
 *.mov
 *.MOV
