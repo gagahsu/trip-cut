@@ -75,7 +75,8 @@ Claude 讀 `manifest.json`、`work/contact/*.jpg`、`work/transcript.json`，寫
 
 - 目標長度：60s（9:16）
 - 語氣：溫暖、家庭、慢節奏
-- BGM：使用者提供（raw/bgm.mp3），若無則無配樂
+- BGM：使用者提供（放 `work/bgm/`），或由 Claude 依腳本語氣從 Incompetech 挑並下載
+  （來源、目錄欄位、下載網址、標註格式見 `REFERENCES.md`；挑曲原則見 `STYLE-TEMPLATE.md` §4）
 
 ## 段落
 ### 1. 抵達（0–8s）

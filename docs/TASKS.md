@@ -94,3 +94,11 @@
   ③ **`tripcut finish`**：見上。
   另修 `finish.verify()` 的 ebur128 解析——原本 `re.search` 會抓到開頭逐幀的 -70 LUFS
   暖機值，改成只認 `Summary:` 之後的數字。
+- 2026-09-20：BGM 來源寫進 `docs/REFERENCES.md`（使用者問到才發現沒寫）。原本只埋在
+  TASKS 的兩則 Log 裡——那是流水帳不是參考資料，而且 `PIPELINE.md` 還寫著過時的
+  「BGM：使用者提供（raw/bgm.mp3）」。重新驗證過才寫：目錄 `pieces.json` HTTP 200、
+  1442 首，下載網址是 `mp3-royaltyfree/<filename>`（filename 取自目錄欄位、含空格要
+  URL encode），抓下來 ffprobe 確認是真 mp3。順便記下可篩的欄位（`feel`/`instruments`/
+  `bpm`/`length`）、常見 `feel` 值、CC BY 4.0 標註格式，以及 Pixabay 403、YouTube
+  音訊庫要登入這兩個不能自動抓。`PIPELINE.md` Stage 3 與 `templates/script.md` 的
+  BGM 欄位一併更新。
