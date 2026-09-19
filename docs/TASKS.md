@@ -103,3 +103,12 @@
   音訊庫要登入這兩個不能自動抓。`PIPELINE.md` Stage 3 與 `templates/script.md` 的
   BGM 欄位一併更新。
 - 2026-09-20：加 `docs/templates/new-video-prompt.md`——開新片用的 prompt 範本，含流程對照表、偏離模板時的提醒句、素材準備（含 junction）與腳本階段要先想好的五件事。
+- 2026-09-20：加第三個調色 preset `fresh`（晴天綠地）。使用者問「戶外/草地要用哪個」，
+  查了發現兩支樣本沒涵蓋這種場景（A 城市室內、B 雪地），所以拿 `2025-06-zhumeng`
+  （夏天溪邊玩水）實際渲圖量測，不用猜的。結果：`warm` 把綠地 hue 從 95.7° 推到
+  83.4°（變橄欖黃），`cool` 把綠地飽和從 0.519 壓到 0.392（掉 24%，變死板），
+  兩個都不能用。試了三組參數，選 `saturate(1.20) contrast(0.96) brightness(1.03)`
+  + `#7CFF4D` soft-light 5%：綠地 hue 101.9°（+6° 往真綠但沒過頭）、綠地飽和 0.498、
+  整體飽和 0.442、天空飽和 0.564 都是最佳。已加進 style.tsx / schema / STYLE-TEMPLATE §5
+  / 範例 EDL / new-video-prompt。文件裡明確標註這組**不是量自樣本**，來源與 warm/cool 不同。
+  判斷準則寫成「看天氣不是看植被」：晴天藍空→fresh、灰空下雨→warm（溪頭那趟就是）、雪地海→cool。

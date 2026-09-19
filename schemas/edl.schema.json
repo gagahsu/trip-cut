@@ -44,6 +44,7 @@
           "enum": [
             "warm",
             "cool",
+            "fresh",
             "none"
           ],
           "description": "全片調色，可被 clip.grade 覆寫"
@@ -190,6 +191,7 @@
             "enum": [
               "warm",
               "cool",
+              "fresh",
               "none"
             ],
             "description": "這一段的調色，覆寫 output.grade"

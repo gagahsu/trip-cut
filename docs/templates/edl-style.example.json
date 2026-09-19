@@ -144,13 +144,13 @@
       "transition_out": "cut"
     },
     {
-      "_note": "grade 覆寫：output.grade 是 warm，這段海景改 cool。色調跟著段落主題走，不是全片一條 LUT。",
+      "_note": "grade 覆寫：output.grade 是 warm，這段晴天溪邊改 fresh。色調跟著段落主題走，不是全片一條 LUT。判斷關鍵是天氣不是植被：有陽光天是藍的→fresh，灰空下雨→warm，雪地海邊→cool。",
       "seq": 7,
       "source": "v004",
       "in": 5.2,
       "out": 8.4,
       "keep_audio": false,
-      "grade": "cool",
+      "grade": "fresh",
       "transition_out": "cut",
       "captions": [
         {
@@ -166,7 +166,7 @@
       "in": 33.1,
       "out": 35.5,
       "keep_audio": true,
-      "grade": "cool",
+      "grade": "fresh",
       "transition_out": "cut",
       "captions": [
         {

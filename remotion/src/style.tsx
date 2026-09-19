@@ -60,7 +60,7 @@ export type Badge = {
   pos?: [number, number];
 };
 
-export type Grade = "warm" | "cool" | "none";
+export type Grade = "warm" | "cool" | "fresh" | "none";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
@@ -289,6 +289,9 @@ export const PolaroidPhoto: React.FC<{
 export const GRADE_CSS: Record<Exclude<Grade, "none">, { filter: string; tint: string; alpha: number }> = {
   warm: { filter: "saturate(1.18) contrast(0.93) brightness(0.99)", tint: "#FF8A2B", alpha: 0.16 },
   cool: { filter: "saturate(0.97) contrast(0.93) brightness(1.02)", tint: "#2B7BFF", alpha: 0.16 },
+  // fresh：晴天綠地／公園／溪邊。warm 會把綠色推到橄欖黃（hue 95.7°→83.4°），
+  // cool 會把綠色抽掉 24% 飽和變死板；這組讓綠色往真綠走 +6° 又不掉飽和。
+  fresh: { filter: "saturate(1.20) contrast(0.96) brightness(1.03)", tint: "#7CFF4D", alpha: 0.05 },
 };
 
 export const GradeWrap: React.FC<{ grade?: Grade; children: React.ReactNode }> = ({

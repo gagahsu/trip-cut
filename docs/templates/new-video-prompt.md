@@ -13,7 +13,8 @@
 素材：已經放在 projects/<2026-10-okinawa>/raw/
 要幾版：<60s（IG Reels）＋ 120s（家人完整版）>
 語氣：<family>          # family=家庭 vlog／碎念體，guide=攻略／推薦體
-調色：<warm>            # warm=城市/室內/美食，cool=雪地/海/清晨；可分段覆寫
+調色：<warm>            # warm=城市/室內/美食/陰雨森林，cool=雪地/海/清晨，
+                        #   fresh=晴天草地/公園/溪邊；可分段覆寫
 片中人物怎麼稱呼：<小孩叫奈奈（妹妹）、達達（哥哥）>   # 不想出現名字就寫「不要出現名字」
 
 先讀 CLAUDE.md，再讀 docs/STYLE-TEMPLATE.md（剪輯規則、字幕、音樂、色調）
