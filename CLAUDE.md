@@ -46,7 +46,7 @@ trip-cut/
 │   ├── TASKS.md             分階段待辦（開工前必讀）
 │   ├── DECISIONS.md         ADR：為什麼選這些工具
 │   ├── STYLE-TEMPLATE.md    參考影片拆解：剪輯規則／字幕／音樂／色調（寫 script.md 與 edl.json 前先讀）
-│   ├── templates/          script.md 與 edl-style.example.json（合成範例，照抄欄位用法）
+│   ├── templates/          new-video-prompt.md（開新片用）、script.md、edl-style.example.json
 │   └── REFERENCES.md        外部工具與參考專案連結
 ├── schemas/
 │   ├── manifest.schema.json 素材清單

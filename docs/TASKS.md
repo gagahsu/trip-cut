@@ -102,3 +102,4 @@
   `bpm`/`length`）、常見 `feel` 值、CC BY 4.0 標註格式，以及 Pixabay 403、YouTube
   音訊庫要登入這兩個不能自動抓。`PIPELINE.md` Stage 3 與 `templates/script.md` 的
   BGM 欄位一併更新。
+- 2026-09-20：加 `docs/templates/new-video-prompt.md`——開新片用的 prompt 範本，含流程對照表、偏離模板時的提醒句、素材準備（含 junction）與腳本階段要先想好的五件事。
