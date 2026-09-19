@@ -1,0 +1,365 @@
+{
+  "_readme": [
+    "STYLE-TEMPLATE 的 EDL 範例。虛構素材、虛構地點，不含任何真實內容。",
+    "用途：寫新的 edl.json 時照抄欄位用法，規則看 docs/STYLE-TEMPLATE.md。",
+    "這份不能直接跑 —— 它引用的 v001/p001 等 source 不在任何 manifest 裡；",
+    "要驗證請把欄位搬到你自己專案的 edl.json，再跑 tripcut edl-validate。",
+    "底下每個 _note 說明該段在示範什麼，_note 不影響 tripcut props 的輸出。",
+    "",
+    "四層字幕（captions[].layer）與各自的預設位置／字級（佔畫面寬）：",
+    "  chapter  [0.5,0.19]  5.5%   段落分隔、梗標，格式固定為 ★ 文字 ★",
+    "  main     [0.5,0.72]  5.8%   旁白／吐槽／品名。tone: neutral=黑描邊 author=粉紅描邊",
+    "  translit [0.5,0.785] 5.0%   對白的英文翻譯層，細白無描邊",
+    "  emphasis [0.5,0.45]  11.5%  情緒爆點／價格／數字，白字橘紅雙層粗描邊",
+    "pos 與 size 可逐句覆寫；in/out 是相對「本段」的秒數，省略就是整段。"
+  ],
+  "project": "2026-10-okinawa",
+  "output": {
+    "aspect": "9:16",
+    "fps": 30,
+    "target_duration": 40,
+    "preset": "family",
+    "grade": "warm"
+  },
+  "bgm": {
+    "path": "work/bgm/example.mp3",
+    "volume": 0.6,
+    "duck_under_speech": true
+  },
+  "clips": [
+    {
+      "_note": "開場鉤子：懸念字 → 0.35s 絕對靜音 → 揭曉。silence 的位置要用 RMS 包絡找語句之間天然的停頓，不要憑逐字稿的時間碼。size 覆寫成比預設大，揭曉字再大一級。",
+      "seq": 1,
+      "source": "v001",
+      "in": 12.4,
+      "out": 14.7,
+      "keep_audio": true,
+      "transition_out": "cut",
+      "silence": {
+        "in": 1.15,
+        "out": 1.5
+      },
+      "captions": [
+        {
+          "layer": "main",
+          "text": "今年夏天要去…",
+          "in": 0.0,
+          "out": 1.15,
+          "pos": [
+            0.5,
+            0.33
+          ],
+          "size": 0.071,
+          "tone": "neutral"
+        },
+        {
+          "layer": "main",
+          "text": "沖繩",
+          "in": 1.5,
+          "out": 2.3,
+          "pos": [
+            0.5,
+            0.33
+          ],
+          "size": 0.105,
+          "tone": "author",
+          "anim": "pop"
+        }
+      ]
+    },
+    {
+      "_note": "位置膠囊：primary 是類別（橘褐）、secondary 是專名（深褐）。地點只標一次，不要再配一個同名的 chapter 字卡。",
+      "seq": 2,
+      "source": "v002",
+      "in": 3.0,
+      "out": 4.6,
+      "keep_audio": false,
+      "transition_out": "cut",
+      "badge": {
+        "icon": "📍",
+        "primary": "那霸",
+        "secondary": "國際通",
+        "in": 0.0,
+        "out": 1.6,
+        "pos": [
+          0.35,
+          0.25
+        ]
+      }
+    },
+    {
+      "_note": "main / neutral：中性敘述，白字黑描邊。文字要自己讀過再放，逐字稿常有誤聽。",
+      "seq": 3,
+      "source": "v002",
+      "in": 21.3,
+      "out": 23.1,
+      "keep_audio": true,
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "main",
+          "text": "第一站先吃冰",
+          "tone": "neutral"
+        }
+      ]
+    },
+    {
+      "_note": "main / author：作者吐槽，白字粉紅描邊。tone 是語氣的區分，不是隨機換色。",
+      "seq": 4,
+      "source": "v002",
+      "in": 40.8,
+      "out": 42.4,
+      "keep_audio": true,
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "main",
+          "text": "結果排了四十分鐘",
+          "tone": "author"
+        }
+      ]
+    },
+    {
+      "_note": "chapter：段落分隔靠字卡，畫面照樣硬切，不加轉場。",
+      "seq": 5,
+      "source": "v003",
+      "in": 0.0,
+      "out": 2.2,
+      "keep_audio": true,
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "chapter",
+          "text": "★ 出發去水族館 ★"
+        }
+      ]
+    },
+    {
+      "_note": "沒有字幕的純畫面。不是每一鏡都要放字，讓觀眾喘口氣。",
+      "seq": 6,
+      "source": "v003",
+      "in": 18.5,
+      "out": 19.9,
+      "keep_audio": false,
+      "transition_out": "cut"
+    },
+    {
+      "_note": "grade 覆寫：output.grade 是 warm，這段海景改 cool。色調跟著段落主題走，不是全片一條 LUT。",
+      "seq": 7,
+      "source": "v004",
+      "in": 5.2,
+      "out": 8.4,
+      "keep_audio": false,
+      "grade": "cool",
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "chapter",
+          "text": "★ 海超藍 ★"
+        }
+      ]
+    },
+    {
+      "_note": "emphasis + main 同時在畫面上。emphasis 用 pulse（0.65s 週期 ±12%），放價格、數字、情緒爆點。",
+      "seq": 8,
+      "source": "v004",
+      "in": 33.1,
+      "out": 35.5,
+      "keep_audio": true,
+      "grade": "cool",
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "emphasis",
+          "text": "兩千日幣",
+          "in": 0.2,
+          "out": 2.4,
+          "anim": "pulse"
+        },
+        {
+          "layer": "main",
+          "text": "門票比想像中便宜",
+          "in": 0.2,
+          "out": 2.4,
+          "tone": "neutral"
+        }
+      ]
+    },
+    {
+      "_note": "translit：對白的英文翻譯層，細白無描邊。有外語對話或想給國際觀眾看時才用。",
+      "seq": 9,
+      "source": "v005",
+      "in": 9.6,
+      "out": 11.4,
+      "keep_audio": true,
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "main",
+          "text": "這個要怎麼點？",
+          "tone": "neutral"
+        },
+        {
+          "layer": "translit",
+          "text": "How do we order this?"
+        }
+      ]
+    },
+    {
+      "_note": "橫式來源輸出直式必須指定 crop（center/left/right 或 0..1 的 x 焦點），否則 edl-validate 會擋下來。",
+      "seq": 10,
+      "source": "v006",
+      "in": 14.0,
+      "out": 15.6,
+      "keep_audio": false,
+      "crop": "center",
+      "transition_out": "cut"
+    },
+    {
+      "_note": "audio_override：畫面用這一段，聲音蓋另一段。典型用法是小孩戴著相機的主觀鏡頭畫面配上大人的對話。",
+      "seq": 11,
+      "source": "v007",
+      "in": 120.0,
+      "out": 121.8,
+      "keep_audio": false,
+      "audio_override": {
+        "source": "v007",
+        "in": 46.3
+      },
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "chapter",
+          "text": "★ 小孩視角 ★"
+        },
+        {
+          "layer": "main",
+          "text": "鏡頭一直被手擋住",
+          "in": 0.3,
+          "out": 1.8,
+          "tone": "author"
+        }
+      ]
+    },
+    {
+      "_note": "同鏡跳接：同一支來源、相鄰但不連續的兩段，中間跳掉鏡頭晃到或講廢話的部分。節奏感有一半來自這個，不是來自換鏡頭。",
+      "seq": 12,
+      "source": "v008",
+      "in": 62.4,
+      "out": 64.3,
+      "keep_audio": true,
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "main",
+          "text": "走，我們去那邊",
+          "tone": "neutral"
+        }
+      ]
+    },
+    {
+      "_note": "接上一段，跳過 64.30-65.10 鏡頭被撞到的部分。",
+      "seq": 13,
+      "source": "v008",
+      "in": 65.1,
+      "out": 66.8,
+      "keep_audio": true,
+      "transition_out": "cut"
+    },
+    {
+      "_note": "呼吸鏡：每 8-12 鏡插一個 2.8-4.2s 的長鏡（風景、全景、小孩專注在做事），不放字幕。",
+      "seq": 14,
+      "source": "v009",
+      "in": 7.0,
+      "out": 10.2,
+      "keep_audio": true,
+      "transition_out": "cut"
+    },
+    {
+      "_note": "照片走拍立得卡：effect 一定要 none（照片保持靜止，不推鏡），photo_frame 給 polaroid，rotate 建議 -5 ~ +5 度。照片是標點符號不是主體，整支片建議不超過 5% 長度。",
+      "seq": 15,
+      "source": "p001",
+      "start": 0,
+      "duration": 1.8,
+      "effect": "none",
+      "photo_frame": "polaroid",
+      "rotate": 3,
+      "transition_out": "cut"
+    },
+    {
+      "_note": "照片也可以走舊的滿版 Ken Burns（effect: kenburns，kenburns.from/to 是 [cx, cy, scale]）。STYLE-TEMPLATE 的樣本裡沒有這種用法，要用請自己確認合不合當下的風格。",
+      "seq": 16,
+      "source": "p002",
+      "start": 0,
+      "duration": 2.5,
+      "effect": "kenburns",
+      "kenburns": {
+        "from": [
+          0.5,
+          0.55,
+          1.0
+        ],
+        "to": [
+          0.5,
+          0.5,
+          1.12
+        ]
+      },
+      "transition_out": "cut"
+    },
+    {
+      "_note": "收尾台詞。最後一鏡不放資訊，所以字卡放在倒數第二鏡。",
+      "seq": 17,
+      "source": "v010",
+      "in": 88.2,
+      "out": 90.1,
+      "keep_audio": true,
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "main",
+          "text": "要回家囉",
+          "tone": "neutral"
+        }
+      ]
+    },
+    {
+      "_note": "彩蛋：小孩自己講的一句話，放在收尾和片尾卡之間。沒有也可以。",
+      "seq": 18,
+      "source": "v011",
+      "in": 1.4,
+      "out": 4.3,
+      "keep_audio": true,
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "main",
+          "text": "我還想再來一次",
+          "tone": "author"
+        }
+      ]
+    },
+    {
+      "_note": "片尾拍立得定格 2.5-3s，讓觀眾看清楚再結束。聲音不淡出（BGM 自己會在最後 1.5s 收）。",
+      "seq": 19,
+      "source": "p003",
+      "start": 0,
+      "duration": 2.8,
+      "effect": "none",
+      "photo_frame": "polaroid",
+      "rotate": -4,
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "main",
+          "text": "2026.10 沖繩",
+          "tone": "author",
+          "pos": [
+            0.5,
+            0.82
+          ]
+        }
+      ]
+    }
+  ]
+}

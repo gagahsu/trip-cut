@@ -288,6 +288,10 @@ B 用另一種開場：**第 0 秒就直接給最好看的畫面**（小孩滑�
 
 ### 7.2 EDL 新欄位（`schemas/edl.schema.json` 已加）
 
+完整可抄的範例在 **`docs/templates/edl-style.example.json`**——虛構素材、不含個資，
+19 段涵蓋四層字幕、兩種 tone、pulse/pop、位置膠囊、拍立得、分段調色、audio_override、
+同鏡跳接與開場靜音，每段都有 `_note` 說明在示範什麼。下面是欄位速查：
+
 ```jsonc
 {
   "output": { "preset": "family | guide", "grade": "warm | cool | none" },
