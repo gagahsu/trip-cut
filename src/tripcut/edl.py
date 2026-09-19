@@ -174,7 +174,10 @@ def build_props(
                 os.link(p, dst)
             except OSError:
                 shutil.copy2(p, dst)
+        staged.add(dst)
         return f"{sub}/{p.name}"
+
+    staged: set[Path] = set()
 
     clips_out: list[dict[str, Any]] = []
     cursor = 0
@@ -229,6 +232,45 @@ def build_props(
                 "text": clip["title"]["text"],
                 "style": clip["title"].get("style", "lower-third"),
             }
+        # --- STYLE-TEMPLATE 的新層（見 docs/STYLE-TEMPLATE.md）---
+        grade = clip.get("grade", edl["output"].get("grade", "none"))
+        if grade and grade != "none":
+            entry["grade"] = grade
+        caps = clip.get("captions") or []
+        if caps:
+            entry["captions"] = [
+                {
+                    "layer": c["layer"],
+                    "text": c["text"],
+                    "fromFrame": f(float(c.get("in", 0.0))),
+                    "durFrames": f(
+                        float(c.get("out", clip_duration(clip))) - float(c.get("in", 0.0))
+                    ),
+                    **({"pos": c["pos"]} if c.get("pos") else {}),
+                    **({"tone": c["tone"]} if c.get("tone") else {}),
+                    **({"anim": c["anim"]} if c.get("anim") else {}),
+                    **({"size": c["size"]} if c.get("size") else {}),
+                }
+                for c in caps
+            ]
+        if clip.get("badge"):
+            b = clip["badge"]
+            entry["badge"] = {
+                "icon": b.get("icon", "📍"),
+                "primary": b["primary"],
+                **({"secondary": b["secondary"]} if b.get("secondary") else {}),
+                "fromFrame": f(float(b.get("in", 0.0))),
+                "durFrames": f(float(b.get("out", clip_duration(clip))) - float(b.get("in", 0.0))),
+                **({"pos": b["pos"]} if b.get("pos") else {}),
+            }
+        if clip.get("photo_frame") and clip["photo_frame"] != "none":
+            entry["photoFrame"] = clip["photo_frame"]
+            entry["rotate"] = float(clip.get("rotate", -4))
+        if clip.get("silence"):
+            entry["silence"] = {
+                "fromFrame": f(float(clip["silence"]["in"])),
+                "toFrame": f(float(clip["silence"]["out"])),
+            }
         trans = entry["transitionOut"]
         prev_overlap = 0
         if trans == "crossfade":
@@ -250,6 +292,7 @@ def build_props(
         "height": height,
         "durationInFrames": total_frames,
         "bgm": None,
+        "preset": edl["output"].get("preset", "family"),
         "clips": clips_out,
     }
     if edl.get("bgm", {}).get("path"):
@@ -260,5 +303,33 @@ def build_props(
         }
     out_name = props_name or edl_name.replace("edl", "props", 1)
     out = project_dir / out_name
+    _prune_public(project_dir, public_dir, staged, out)
     save_json(out, props)
     return out
+
+
+def _prune_public(
+    project_dir: Path, public_dir: Path, staged: set[Path], current_props: Path
+) -> None:
+    """清掉 work/public 裡沒有任何 props 指到的檔案。
+
+    Remotion bundle 會把整個 public dir 複製一份，殘留的舊 clip 等於每次 render 都白複製
+    幾百 MB（溪頭一度累積到 75 個 clip / 1.6 GB）。但專案可能同時有多份 props（60s / 120s /
+    style），所以保留「任何一份 props 還指到的檔案」，只刪真正沒人用的。
+    """
+    keep = set(staged)
+    for pf in project_dir.glob("props*.json"):
+        if pf == current_props:
+            continue
+        try:
+            data = load_json(pf)
+        except (OSError, ValueError):
+            continue
+        srcs = [c["src"] for c in data.get("clips", []) if c.get("src")]
+        srcs += [c["audioOverride"]["src"] for c in data.get("clips", []) if c.get("audioOverride")]
+        if data.get("bgm", {}).get("src"):
+            srcs.append(data["bgm"]["src"])
+        keep.update(public_dir / s for s in srcs)
+    for stale in public_dir.rglob("*"):
+        if stale.is_file() and stale not in keep:
+            stale.unlink()

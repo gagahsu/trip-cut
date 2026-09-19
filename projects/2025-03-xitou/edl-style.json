@@ -1,0 +1,535 @@
+{
+  "project": "2025-03-xitou",
+  "output": {
+    "aspect": "9:16",
+    "fps": 30,
+    "target_duration": 60,
+    "preset": "family",
+    "grade": "warm"
+  },
+  "bgm": {
+    "path": "work/bgm/carefree.mp3",
+    "volume": 0.75,
+    "duck_under_speech": true
+  },
+  "clips": [
+    {
+      "seq": 1,
+      "source": "v010",
+      "in": 3.35,
+      "out": 5.65,
+      "keep_audio": true,
+      "transition_out": "cut",
+      "silence": {
+        "in": 1.2,
+        "out": 1.55
+      },
+      "captions": [
+        {
+          "layer": "main",
+          "text": "今天要去哪裡…",
+          "in": 0.0,
+          "out": 1.2,
+          "pos": [
+            0.5,
+            0.33
+          ],
+          "tone": "neutral",
+          "size": 0.071
+        },
+        {
+          "layer": "main",
+          "text": "溪頭",
+          "in": 1.55,
+          "out": 2.3,
+          "pos": [
+            0.5,
+            0.33
+          ],
+          "tone": "author",
+          "anim": "pop",
+          "size": 0.105
+        }
+      ]
+    },
+    {
+      "seq": 2,
+      "source": "v002",
+      "in": 9.5,
+      "out": 11.1,
+      "keep_audio": false,
+      "transition_out": "cut",
+      "badge": {
+        "icon": "📍",
+        "primary": "南投",
+        "secondary": "溪頭園區",
+        "in": 0.0,
+        "out": 1.6,
+        "pos": [
+          0.35,
+          0.25
+        ]
+      }
+    },
+    {
+      "seq": 3,
+      "source": "v001",
+      "in": 55.0,
+      "out": 56.6,
+      "keep_audio": true,
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "main",
+          "text": "下雨天，也要出門",
+          "tone": "neutral"
+        }
+      ]
+    },
+    {
+      "seq": 4,
+      "source": "v002",
+      "in": 103.0,
+      "out": 104.6,
+      "keep_audio": true,
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "chapter",
+          "text": "★ 走進柳杉林道 ★"
+        }
+      ]
+    },
+    {
+      "seq": 5,
+      "source": "v003",
+      "in": 42.4,
+      "out": 44.4,
+      "keep_audio": true,
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "main",
+          "text": "走到銀杏林，我就給你了",
+          "tone": "neutral"
+        }
+      ]
+    },
+    {
+      "seq": 6,
+      "source": "v003",
+      "in": 45.9,
+      "out": 47.7,
+      "keep_audio": true,
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "main",
+          "text": "……傘還是沒到手",
+          "tone": "author"
+        }
+      ]
+    },
+    {
+      "seq": 7,
+      "source": "v002",
+      "in": 129.5,
+      "out": 130.5,
+      "keep_audio": false,
+      "transition_out": "cut"
+    },
+    {
+      "seq": 8,
+      "source": "v006",
+      "in": 1.0,
+      "out": 3.1,
+      "keep_audio": true,
+      "transition_out": "cut"
+    },
+    {
+      "seq": 9,
+      "source": "v005",
+      "in": 0.0,
+      "out": 2.3,
+      "keep_audio": true,
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "chapter",
+          "text": "★ 這裡有很多恐龍 ★"
+        }
+      ]
+    },
+    {
+      "seq": 10,
+      "source": "v004",
+      "in": 16.0,
+      "out": 17.8,
+      "keep_audio": true,
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "main",
+          "text": "爸爸你要陪我",
+          "tone": "neutral"
+        }
+      ]
+    },
+    {
+      "seq": 11,
+      "source": "v004",
+      "in": 48.4,
+      "out": 50.3,
+      "keep_audio": true,
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "main",
+          "text": "她是木頭恐龍啊",
+          "tone": "author"
+        }
+      ]
+    },
+    {
+      "seq": 12,
+      "source": "v005",
+      "in": 24.1,
+      "out": 25.5,
+      "keep_audio": true,
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "main",
+          "text": "媽媽也差點滑倒",
+          "tone": "author"
+        }
+      ]
+    },
+    {
+      "seq": 13,
+      "source": "v007",
+      "in": 331.0,
+      "out": 332.8,
+      "keep_audio": false,
+      "transition_out": "cut",
+      "audio_override": {
+        "source": "v007",
+        "in": 152.3
+      },
+      "captions": [
+        {
+          "layer": "chapter",
+          "text": "★ 奈奈視角 ★"
+        },
+        {
+          "layer": "main",
+          "text": "都只有拍到你的手",
+          "in": 0.3,
+          "out": 2.2,
+          "tone": "author"
+        }
+      ]
+    },
+    {
+      "seq": 14,
+      "source": "v007",
+      "in": 469.0,
+      "out": 470.6,
+      "keep_audio": false,
+      "transition_out": "cut",
+      "audio_override": {
+        "source": "v007",
+        "in": 438.06
+      }
+    },
+    {
+      "seq": 15,
+      "source": "v007",
+      "in": 765.5,
+      "out": 766.7,
+      "keep_audio": false,
+      "transition_out": "cut"
+    },
+    {
+      "seq": 16,
+      "source": "v010",
+      "in": 273.9,
+      "out": 275.9,
+      "keep_audio": true,
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "chapter",
+          "text": "★ 雨變大了 ★"
+        }
+      ]
+    },
+    {
+      "seq": 17,
+      "source": "v010",
+      "in": 263.5,
+      "out": 265.3,
+      "keep_audio": true,
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "main",
+          "text": "雨傘放頭上\n手才不會痠",
+          "tone": "neutral"
+        }
+      ]
+    },
+    {
+      "seq": 18,
+      "source": "v010",
+      "in": 134.6,
+      "out": 136.2,
+      "keep_audio": true,
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "main",
+          "text": "帽子戴反了啦",
+          "tone": "author"
+        }
+      ]
+    },
+    {
+      "seq": 19,
+      "source": "v010",
+      "in": 441.5,
+      "out": 443.0,
+      "keep_audio": true,
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "main",
+          "text": "達達",
+          "tone": "author",
+          "pos": [
+            0.5,
+            0.7
+          ]
+        }
+      ]
+    },
+    {
+      "seq": 20,
+      "source": "v008",
+      "in": 45.5,
+      "out": 46.8,
+      "keep_audio": false,
+      "crop": "center",
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "main",
+          "text": "奈奈",
+          "tone": "author",
+          "pos": [
+            0.5,
+            0.7
+          ]
+        }
+      ]
+    },
+    {
+      "seq": 21,
+      "source": "v009",
+      "in": 61.5,
+      "out": 62.8,
+      "keep_audio": false,
+      "crop": "center",
+      "transition_out": "cut"
+    },
+    {
+      "seq": 22,
+      "source": "v010",
+      "in": 906.0,
+      "out": 908.6,
+      "keep_audio": true,
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "chapter",
+          "text": "★ 起霧了 ★"
+        }
+      ]
+    },
+    {
+      "seq": 23,
+      "source": "v010",
+      "in": 940.8,
+      "out": 942.2,
+      "keep_audio": true,
+      "transition_out": "cut"
+    },
+    {
+      "seq": 24,
+      "source": "v012",
+      "in": 0.0,
+      "out": 1.6,
+      "keep_audio": true,
+      "transition_out": "cut",
+      "badge": {
+        "icon": "📍",
+        "primary": "溪頭",
+        "secondary": "妖怪村",
+        "in": 0.0,
+        "out": 1.6,
+        "pos": [
+          0.35,
+          0.26
+        ]
+      }
+    },
+    {
+      "seq": 25,
+      "source": "v011",
+      "in": 21.0,
+      "out": 23.4,
+      "keep_audio": true,
+      "crop": "center",
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "emphasis",
+          "text": "六十趴",
+          "in": 0.2,
+          "out": 2.4,
+          "anim": "pulse"
+        },
+        {
+          "layer": "main",
+          "text": "相機快沒電了",
+          "in": 0.2,
+          "out": 2.4,
+          "tone": "neutral"
+        }
+      ]
+    },
+    {
+      "seq": 26,
+      "source": "v013",
+      "in": 27.5,
+      "out": 29.0,
+      "keep_audio": false,
+      "transition_out": "cut"
+    },
+    {
+      "seq": 27,
+      "source": "v013",
+      "in": 87.0,
+      "out": 88.4,
+      "keep_audio": false,
+      "transition_out": "cut"
+    },
+    {
+      "seq": 28,
+      "source": "v015",
+      "in": 17.0,
+      "out": 18.8,
+      "keep_audio": true,
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "main",
+          "text": "爸爸救命喔",
+          "tone": "author"
+        }
+      ]
+    },
+    {
+      "seq": 29,
+      "source": "v017",
+      "in": 52.7,
+      "out": 55.0,
+      "keep_audio": true,
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "chapter",
+          "text": "★ 一二三，跑！★"
+        }
+      ]
+    },
+    {
+      "seq": 30,
+      "source": "v018",
+      "in": 12.3,
+      "out": 14.2,
+      "keep_audio": true,
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "main",
+          "text": "我們推著爸爸走",
+          "tone": "neutral"
+        }
+      ]
+    },
+    {
+      "seq": 31,
+      "source": "v018",
+      "in": 18.5,
+      "out": 19.8,
+      "keep_audio": true,
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "main",
+          "text": "加油！",
+          "tone": "author",
+          "pos": [
+            0.5,
+            0.7
+          ]
+        }
+      ]
+    },
+    {
+      "seq": 32,
+      "source": "v016",
+      "in": 94.4,
+      "out": 96.5,
+      "keep_audio": true,
+      "transition_out": "cut"
+    },
+    {
+      "seq": 33,
+      "source": "v016",
+      "in": 97.2,
+      "out": 98.48,
+      "keep_audio": true,
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "main",
+          "text": "到停車場了",
+          "tone": "neutral"
+        }
+      ]
+    },
+    {
+      "seq": 34,
+      "source": "p005",
+      "start": 0,
+      "duration": 2.9,
+      "effect": "none",
+      "photo_frame": "polaroid",
+      "rotate": -4,
+      "transition_out": "cut",
+      "captions": [
+        {
+          "layer": "main",
+          "text": "2025.03.16 溪頭",
+          "tone": "author",
+          "pos": [
+            0.5,
+            0.82
+          ]
+        }
+      ]
+    }
+  ]
+}

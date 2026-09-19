@@ -23,6 +23,15 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
+import {
+  Captions,
+  GradeWrap,
+  LocationBadge,
+  PolaroidPhoto,
+  type Badge,
+  type Caption,
+  type Grade,
+} from "./style";
 
 export type KenBurns = { from: [number, number, number]; to: [number, number, number] };
 export type Title = { text: string; style: "center" | "lower-third" | "chapter" };
@@ -50,6 +59,13 @@ export type Clip = {
   cropX?: number;
   audioOverride?: { src: string; inFrame: number };
   title?: Title;
+  // STYLE-TEMPLATE 的新層
+  grade?: Grade;
+  captions?: Caption[];
+  badge?: Badge;
+  photoFrame?: "none" | "polaroid";
+  rotate?: number;
+  silence?: { fromFrame: number; toFrame: number };
 };
 
 export type MontageProps = {
@@ -59,6 +75,7 @@ export type MontageProps = {
   height: number;
   durationInFrames: number;
   bgm: { src: string; volume: number; duckUnderSpeech: boolean } | null;
+  preset?: "family" | "guide";
   clips: Clip[];
 };
 
@@ -96,6 +113,9 @@ const KenBurnsPhoto: React.FC<{ clip: Clip }> = ({ clip }) => {
 const VideoClip: React.FC<{ clip: Clip }> = ({ clip }) => {
   const inFrame = clip.inFrame ?? 0;
   const cropX = clip.cropX ?? 0.5;
+  const sil = clip.silence;
+  // 開場懸念用的絕對靜音（sample A 實測 1.232-1.535s，振幅歸零而非淡出）
+  const gate = (f: number) => (sil && f >= sil.fromFrame && f < sil.toFrame ? 0 : 1);
   return (
     <AbsoluteFill style={{ backgroundColor: "black" }}>
       <OffthreadVideo
@@ -103,6 +123,7 @@ const VideoClip: React.FC<{ clip: Clip }> = ({ clip }) => {
         startFrom={inFrame}
         endAt={inFrame + clip.durationInFrames}
         muted={!clip.keepAudio}
+        volume={gate}
         style={{
           width: "100%",
           height: "100%",
@@ -115,6 +136,7 @@ const VideoClip: React.FC<{ clip: Clip }> = ({ clip }) => {
           src={staticFile(clip.audioOverride.src)}
           startFrom={clip.audioOverride.inFrame}
           endAt={clip.audioOverride.inFrame + clip.durationInFrames}
+          volume={gate}
         />
       ) : null}
     </AbsoluteFill>
@@ -216,9 +238,26 @@ const ClipLayer: React.FC<{ clip: Clip }> = ({ clip }) => {
           clamp,
         )
       : 1;
+  const media =
+    clip.type === "photo" ? (
+      clip.photoFrame === "polaroid" ? (
+        <PolaroidPhoto
+          src={clip.src}
+          srcWidth={clip.srcWidth}
+          srcHeight={clip.srcHeight}
+          rotate={clip.rotate ?? -4}
+        />
+      ) : (
+        <KenBurnsPhoto clip={clip} />
+      )
+    ) : (
+      <VideoClip clip={clip} />
+    );
   return (
     <AbsoluteFill style={{ opacity: fadeIn * fadeOut }}>
-      {clip.type === "photo" ? <KenBurnsPhoto clip={clip} /> : <VideoClip clip={clip} />}
+      <GradeWrap grade={clip.grade}>{media}</GradeWrap>
+      {clip.captions ? <Captions captions={clip.captions} /> : null}
+      {clip.badge ? <LocationBadge badge={clip.badge} /> : null}
       {clip.title ? <TitleCard title={clip.title} durationInFrames={clip.durationInFrames} /> : null}
     </AbsoluteFill>
   );
@@ -242,17 +281,22 @@ const Bgm: React.FC<{ props: MontageProps }> = ({ props }) => {
     [1, 0],
     clamp,
   );
-  const volume = props.bgm.volume * (speaking ? 0.3 : 1) * tail;
+  const silent = props.clips.some(
+    (c) =>
+      c.silence &&
+      frame >= c.startFrame + c.silence.fromFrame &&
+      frame < c.startFrame + c.silence.toFrame,
+  );
+  const volume = props.bgm.volume * (speaking ? 0.3 : 1) * tail * (silent ? 0 : 1);
   return <Audio src={staticFile(props.bgm.src)} volume={volume} loop />;
 };
 
 export const Montage: React.FC<MontageProps> = (props) => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  const openFade = interpolate(frame, [0, fps * 0.5], [0, 1], clamp);
+  // STYLE-TEMPLATE §2.2：零轉場，開場不淡入。
+  // IG 拿第 1 幀當封面，淡入會讓封面是黑的。
   return (
     <AbsoluteFill style={{ backgroundColor: "black" }}>
-      <AbsoluteFill style={{ opacity: openFade }}>
+      <AbsoluteFill>
         {props.clips.map((clip) => (
           <Sequence
             key={clip.seq}

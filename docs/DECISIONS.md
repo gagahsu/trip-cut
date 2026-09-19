@@ -42,3 +42,20 @@
   - `CLAUDE.md` §3 技術棧「執行環境」改為 Windows 原生。
   - 素材與程式碼都在同一個 Windows 檔案系統路徑下，不再有「/mnt/c 下跑很慢」的顧慮。
   - 若之後真的需要 Linux-only 工具（目前沒有），再開新 ADR 評估要不要局部借 WSL2。
+
+## ADR-008 2026-09-19 長片預裁走專案 ffmpeg，Kinocut 留給短來源與後製
+
+`tripcut clips` 對 2025-03-xitou 的 `edl-style.json`（33 段，來源含 969s 的 v010）實測：
+
+| 路徑 | 每段耗時 | 33 段合計 |
+|---|---|---|
+| Kinocut（`uvx --from kinocut kino` → `trim` + `resize` 兩趟） | ~110s | 估 ~60 分 |
+| 專案 ffmpeg（`--no-kino`，`-ss` 放 `-i` 前做 input seek，單次 encode） | ~2.3s | **77s** |
+
+差距來自兩件事：Kinocut 走 trim→resize **兩次 encode**，而且每段都用 `uvx` 重開一次環境；
+專案路徑是 input seek + 單次 encode，不用把 969s 的來源從頭解到取用點。
+
+**決定**：`tripcut clips` 在**長來源（>3 分鐘）**時預設走 `--no-kino`。
+這不推翻 ADR-002——hard rule 6 本來就允許「專案內腳本」，`_precut_ffmpeg` 是固定參數的專案腳本，
+不是臨時拼的 raw ffmpeg。Kinocut 仍然是**後製／轉檔／品檢**（`kino export`、`kino probe`）的唯一路徑。
+
