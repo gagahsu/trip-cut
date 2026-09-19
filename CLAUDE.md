@@ -57,9 +57,11 @@ trip-cut/
 │   ├── transcribe.py        faster-whisper → transcript.json
 │   ├── contact_sheet.py     把抽幀拼成 contact sheet 給 Claude 看
 │   ├── edl.py               驗證 edl.json、轉成 Remotion props
+│   ├── finish.py            母帶 → 交付檔（loudnorm -14 LUFS、bt709）
 │   └── cli.py
 ├── remotion/                Remotion 專案（獨立 package.json）
-│   └── src/Montage.tsx      單一 props 檔驅動的主 composition
+│   ├── src/Montage.tsx      單一 props 檔驅動的主 composition
+│   └── src/style.tsx        四層字幕、位置膠囊、拍立得、調色（見 STYLE-TEMPLATE）
 ├── projects/<trip-name>/    每趟旅行一個資料夾（整個不進 git，見下）
 ├── .mcp.json                Claude Code 的 MCP 設定（Kinocut）
 └── .gitignore
@@ -87,10 +89,12 @@ tripcut transcribe projects/<trip>       # 有人聲的影片才跑
 # ---- 情境 B：Claude 讀 contact sheet + transcript + manifest → 寫 script.md 草稿，停下等確認 ----
 # ---- 情境 A/B：Claude 依 script.md 產 edl.json ----
 tripcut edl-validate projects/<trip>     # 對 schema 驗證、檢查時間碼不越界（--edl edl-120.json 可指定版本）
-tripcut clips projects/<trip>            # Kinocut 預裁每段到 work/clips/（先跑，props 才會指向預裁檔）
+tripcut clips projects/<trip>            # 預裁每段到 work/clips/（先跑，props 才會指向預裁檔）
+                                         #   來源 >3 分鐘自動走專案 ffmpeg，否則 Kinocut（ADR-008）
 tripcut props projects/<trip>            # edl.json → props.json，並把用到的檔 hard link 到 work/public/
 # ---- 渲染：cd remotion && npx remotion render Montage <out.mp4> --props=<props.json> --public-dir=<專案>/work/public ----
-# ---- 後製／轉檔／品檢：Kinocut MCP（或 kino CLI） ----
+tripcut finish <母帶.mp4>                # -14 LUFS 正規化 + bt709 tag + 降位元率 → <母帶>-share.mp4
+# ---- 其他後製／轉檔：Kinocut MCP（或 kino CLI） ----
 ```
 
 Claude 在每個階段完成後回報：產物路徑、發現的問題、下一步需要使用者做什麼。

@@ -98,12 +98,16 @@ def clips(
     project_dir: Path = ProjectDirArg,
     edl: str = EdlOpt,
     force: bool = typer.Option(False, help="已存在的預裁檔也重做"),
-    no_kino: bool = typer.Option(False, "--no-kino", help="不用 Kinocut，直接用專案 ffmpeg 參數"),
+    kino: bool | None = typer.Option(
+        None,
+        "--kino/--no-kino",
+        help="預設逐段自動選：來源 >3 分鐘走專案 ffmpeg，否則走 Kinocut（見 ADR-008）",
+    ),
 ) -> None:
-    """Stage 5 前置：把 EDL 的影片段落預裁成 work/clips/ 的 1080p 小檔（Kinocut）。"""
+    """Stage 5 前置：把 EDL 的影片段落預裁成 work/clips/ 的 1080p 小檔。"""
     from tripcut.clips import run_clips
 
-    outs = run_clips(project_dir, edl, force=force, use_kino=not no_kino)
+    outs = run_clips(project_dir, edl, force=force, use_kino=kino)
     typer.echo(f"{len(outs)} 個預裁檔在 {project_dir / 'work' / 'clips'}")
 
 
@@ -120,6 +124,32 @@ def props(
 
     out_path = build_props(project_dir, edl, out)
     typer.echo(f"寫出 {out_path}")
+
+
+MasterArg = typer.Argument(..., help="Remotion 出的母帶 mp4")
+FinishOutOpt = typer.Option(None, help="輸出路徑，預設 <母帶>-share.mp4")
+CrfOpt = typer.Option(22, help="交付檔畫質，數字越小越大檔")
+LufsOpt = typer.Option(-14.0, help="目標整合響度（IG/TikTok 是 -14 LUFS）")
+
+
+@app.command()
+def finish(
+    master: Path = MasterArg,
+    out: Path | None = FinishOutOpt,
+    crf: int = CrfOpt,
+    lufs: float = LufsOpt,
+) -> None:
+    """Stage 6：母帶 → 交付檔（-14 LUFS 正規化 + bt709 tag + 降位元率）。"""
+    from tripcut.finish import finish as run_finish
+    from tripcut.finish import verify
+
+    dst = run_finish(master, out, crf=crf, lufs=lufs)
+    v = verify(dst)
+    typer.echo(f"寫出 {dst}")
+    typer.echo(
+        f"  {v['duration']:.2f}s  {v['lufs']} LUFS  LRA {v['lra']} LU  "
+        f"TP {v['true_peak']} dBFS  色彩 {v['color']}"
+    )
 
 
 if __name__ == "__main__":

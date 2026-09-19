@@ -5,7 +5,38 @@
  * 動畫只用 useCurrentFrame / interpolate（CLAUDE.md §6），不可用 CSS animation。
  */
 import React from "react";
-import { AbsoluteFill, Img, interpolate, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
+import { loadVariableFont } from "@remotion/google-fonts/NotoSansTC";
+import {
+  AbsoluteFill,
+  Img,
+  cancelRender,
+  continueRender,
+  delayRender,
+  interpolate,
+  staticFile,
+  useCurrentFrame,
+  useVideoConfig,
+} from "remotion";
+
+/**
+ * 字型從 Google Fonts 載入，不依賴機器上裝了什麼。
+ *
+ * 之前寫死系統字型 "Noto Sans TC Black"，沒裝的機器會靜默退回 Microsoft JhengHei UI
+ * （沒有 Black 字重），章節標和強調字會變細、整個風格跑掉，而且不會報錯。
+ *
+ * 用 variable font：一次涵蓋 100-900 全部字重（900 = 章節標／主字幕／強調字、
+ * 500 = translit 層），請求數是靜態版的一半（102 vs 204）。CJK 字型被 Google 切成
+ * 上百個 unicode-range 分塊，所以請求數本來就高，這裡明確關掉警告。
+ * 代價是 render 時要能連外網抓字型。
+ */
+const fontHandle = delayRender("載入 Noto Sans TC");
+loadVariableFont("normal", {
+  subsets: ["chinese-traditional", "latin"],
+  ignoreTooManyRequestsWarning: true,
+})
+  .waitUntilDone()
+  .then(() => continueRender(fontHandle))
+  .catch((err) => cancelRender(err));
 
 export type CaptionLayerName = "chapter" | "main" | "translit" | "emphasis";
 
@@ -33,8 +64,8 @@ export type Grade = "warm" | "cool" | "none";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
-const FONT_HEAVY = '"Noto Sans TC Black", "Noto Sans TC", "Microsoft JhengHei UI", sans-serif';
-const FONT_LATIN = '"Segoe UI", "Noto Sans TC Medium", "Noto Sans TC", sans-serif';
+const FONT_HEAVY = '"Noto Sans TC", "Microsoft JhengHei UI", sans-serif';
+const FONT_LATIN = '"Segoe UI", "Noto Sans TC", sans-serif';
 
 const PINK = "#FF4D8D";
 const EMPH_OUTER = "#D62200";

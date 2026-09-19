@@ -142,3 +142,20 @@ Composition 的尺寸／長度／fps 都由 props 的 `calculateMetadata` 決定
 ## 分析用 ffmpeg 白名單
 
 Claude 可直接下的 raw ffmpeg 僅限：抽幀（`select`/`fps`）、`volumedetect`、`ffprobe`、縮圖。其餘剪輯操作走 Kinocut。
+
+## Stage 6 — 收尾（`tripcut finish`）
+
+```
+tripcut finish projects/<trip>/out/<trip>-9x16.mp4
+```
+
+Remotion 出的是母帶，不能直接上傳。這一步做 `docs/STYLE-TEMPLATE.md` §1 要求的兩件事：
+
+1. **響度正規化到 -14 LUFS / -1 dBTP**（兩趟 loudnorm，第一趟量測、第二趟套 `measured_*`）。
+   母帶通常是 -19 ～ -20 LUFS；IG／TikTok 會自己拉到 -14 附近，但拉的過程不受我們控制。
+2. **寫入 bt709 三件套**（primaries / transfer / matrix），否則播放器要自己猜色彩空間。
+
+順便把位元率從母帶的 CRF 20（約 30 Mbps）降到 CRF 22（約 18 Mbps）。
+產出 `<母帶>-share.mp4`，並印出品檢數字（長度／LUFS／LRA／true peak／色彩 tag）。
+
+`--crf`、`--lufs`、`--out` 可調。品檢數字也可以自己呼叫 `tripcut.finish.verify()` 取得。

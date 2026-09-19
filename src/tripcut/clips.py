@@ -19,6 +19,11 @@ from tripcut.edl import audio_file, clip_duration, clip_file, effective_size, lo
 
 LONG_EDGE = 1920
 
+# 來源超過這個長度就不走 Kinocut（見 ADR-008）。
+# Kinocut 是 trim → resize 兩次 encode，而且每段都用 uvx 重開環境；專案 ffmpeg 是
+# input seek + 單次 encode。對 969s 的來源實測每段 ~110s vs ~2.3s。
+KINO_SOURCE_LIMIT_SEC = 180.0
+
 
 def _kino_cmd() -> list[str] | None:
     if shutil.which("kino"):
@@ -69,15 +74,24 @@ def run_clips(
     project_dir: Path,
     edl_name: str = "edl.json",
     force: bool = False,
-    use_kino: bool = True,
+    use_kino: bool | None = None,
 ) -> list[Path]:
+    """預裁 EDL 的影片段落。
+
+    Args:
+        use_kino: None（預設）＝逐段自動決定，來源 > KINO_SOURCE_LIMIT_SEC 就走專案
+            ffmpeg；True ＝一律試 Kinocut；False ＝一律走專案 ffmpeg。
+    """
     project_dir = project_dir.resolve()
     edl = load_edl(project_dir, edl_name)
     items = {it["id"]: it for it in load_manifest(project_dir)["items"]}
-    kino = _kino_cmd() if use_kino else None
+    kino_cmd = _kino_cmd() if use_kino is not False else None
     outputs: list[Path] = []
     for clip in sorted(edl["clips"], key=lambda c: int(c["seq"])):
         item = items[clip["source"]]
+        src_dur = float(item.get("duration") or 0.0)
+        prefer_kino = use_kino if use_kino is not None else src_dur <= KINO_SOURCE_LIMIT_SEC
+        kino = kino_cmd if prefer_kino else None
         if item["type"] == "video":
             dst = clip_file(project_dir, clip)
             outputs.append(dst)

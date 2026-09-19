@@ -59,7 +59,7 @@
 - [ ] Claude 選片品質觀察：是否偏好某類畫面、是否漏掉短片段
 - [ ] 文件回填：把實測學到的寫回 PIPELINE.md / CLAUDE.md
 - [ ] **`work/public` 改成每份 props 一個子目錄**。現在三版（60s/120s/style）的預裁檔全擠在同一個 public dir（75 檔 1.6 GB），Remotion bundle 每次 render 都把整包複製一份，光 bundling 就花好幾分鐘。`build_props` 已加 `_prune_public`（刪沒有任何 props 指到的孤兒檔），但同時存在多版時它刪不掉東西——真正的解是 `--public-dir` 指到 `work/public/<props 名>/`。
-- [ ] **收尾步驟 `tripcut finish`**：loudnorm 到 -14 LUFS / -1 dBTP + bt709 三件套 + share 版轉檔。溪頭 style 版是手動下 ffmpeg 兩趟 loudnorm 做的，應該收進 pipeline（模板 §1 的硬性規格）。
+- [x] **收尾步驟 `tripcut finish`**：`src/tripcut/finish.py`，兩趟 loudnorm → -14 LUFS / -1 dBTP、寫入 bt709 三件套、CRF 22 降位元率，並印品檢數字。用溪頭 60s 母帶實測，結果與先前手動做的完全一致（-13.9 LUFS / LRA 7.8 / TP -0.9 / bt709）。
 - [ ] `script.md` 模板加四層字幕欄位（章節標／主字幕 tone／強調字／位置膠囊／調色），見 STYLE-TEMPLATE §7.5
 
 ## Backlog（未排程）
@@ -82,3 +82,15 @@
 - 2026-09-19：**依 sample 兩支 IG Reels 建立剪輯模板，並用它重出溪頭版**。先拆解 `../sample/` 兩支片（台北親子 / 名古屋滑雪），量出剪輯節奏、四層字幕、音樂、色調，寫成 `docs/STYLE-TEMPLATE.md`。三個和專案原本預設相反的發現：**全片零轉場**（逐幀 diff 是單幀尖峰無斜坡）、**剪點不卡拍**（onset 自相關只有 0.10–0.14 且 60–190 BPM 全平坦，音樂是床不是拍）、**照片完全靜止不推鏡**（diff=0）且用拍立得卡呈現。實作：`edl.schema.json` 加 `preset`/`grade`/`captions[]`/`badge`/`photo_frame`/`rotate`/`silence`/`size`；`edl.py` 轉 props；新檔 `remotion/src/style.tsx`（四層字幕 + `StrokeText` 疊兩層描邊 + pulse/pop + `LocationBadge` + `PolaroidPhoto` + `GradeWrap`）；`Montage.tsx` 接上並**拿掉開場淡入**（IG 拿第 1 幀當封面）。產出 `edl-style.json` 33 段 58.8s → `out/2025-03-xitou-style-9x16.mp4`（220 MB）→ loudnorm 到 -14 LUFS 的 `-share.mp4`（137 MB）。品檢：**-13.9 LUFS / TP -0.9 dBFS / bt709 全鏈**（模板 §1 要求，pipeline 之前沒這步）；開場靜音實測 1.249–1.576s（0.327s），對上樣本 A 的 0.303s；色調 p99 從舊版的 **1.000（霧天白空全爆）壓到 0.950**、對比 0.761→0.694、飽和 0.251→0.306、R−B 0.018→0.075，各項都落在樣本 A 的 warm 目標值附近。
 - 2026-09-19：預裁效能。`tripcut clips` 對 33 段走 Kinocut 每段要 ~110s（`trim`+`resize` 兩次 encode，每段還用 `uvx` 重開環境），估 60 分鐘；`--no-kino` 走專案 ffmpeg（`-ss` 放 `-i` 前 input seek、單次 encode）**77 秒跑完**。記成 ADR-008：長來源預設走 `--no-kino`，Kinocut 留給後製／轉檔／品檢。
 - 2026-09-19：溪頭 style 版第二輪（使用者看片後的回修）。四類問題：①**章節標和主字幕字面重複**（★這裡有很多恐龍★／這裡有很多恐龍耶，雨變大了、起霧了同樣）→ 兩層講同一件事時只留章節標；②**章節標和地標膠囊重複**（★妖怪村★ + 📍溪頭 妖怪村）→ 只留膠囊；③**語音被截**，查出根因是**照 Whisper 段落時間碼剪**——「哇 現在又起霧了」被標成 902.23–907.68，實際說話在 906.45–907.70，原本剪 902.2–904.9 整句都沒進去；另三處（爸爸救命喔／一二三／加油）差 0.2–0.9s 截尾。改成一律用 RMS 包絡（0.05s 窗、`max-16dB` 門檻）定剪點，已寫進 STYLE-TEMPLATE §7.4；④**結尾倉卒** → v016 用同鏡跳接拆兩段（跳過 96.6–97.0 鏡頭被撞到那段），補上「哇 到停車場了」收尾台詞，片尾拍立得 1.3s → 2.9s。改完 34 鏡 59.98s。`edl-validate` 在這輪抓到 v016 `out=98.9` 超過影片長度 98.50，改 98.48。
+- 2026-09-20：補掉「在別台機器 clone 就能剪」的三個洞（使用者問到才發現）。
+  ① **字型是未宣告的系統依賴**：`style.tsx` 寫死 `"Noto Sans TC Black"`，SETUP 沒列，
+  新機器沒裝會**靜默**退回 Microsoft JhengHei UI（無 Black 字重），章節標與強調字變細、
+  風格跑掉且不報錯。改用 `@remotion/google-fonts` 的 `loadVariableFont`（variable font
+  一次涵蓋 100-900，請求數 102 vs 靜態版 204），配 `delayRender`/`continueRender`。
+  winget 查過沒有 Noto Sans TC 套件，所以不是「寫進 SETUP 叫人裝」能解的。
+  ② **ADR-008 說長素材走 ffmpeg，但程式預設沒改**：`clips.py` 還是 `use_kino=True`，
+  照標準流程跑會掉進 60 分鐘的路徑。改成 `use_kino: bool | None = None` 逐段自動判斷
+  （來源 > `KINO_SOURCE_LIMIT_SEC` 180s 走 ffmpeg），CLI 改 `--kino/--no-kino` 三態。
+  ③ **`tripcut finish`**：見上。
+  另修 `finish.verify()` 的 ebur128 解析——原本 `re.search` 會抓到開頭逐幀的 -70 LUFS
+  暖機值，改成只認 `Summary:` 之後的數字。

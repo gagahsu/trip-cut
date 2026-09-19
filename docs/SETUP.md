@@ -62,6 +62,17 @@ npx remotion studio          # 開發預覽（瀏覽器開 http://localhost:3000
 ```
 Remotion 授權：個人／3 人以下公司免費；公司規模以上需 company license（見 DECISIONS）。
 
+## 3.5 字型（不用手動裝）
+
+字幕用的 **Noto Sans TC** 由 `@remotion/google-fonts` 在 render 時載入（見
+`remotion/src/style.tsx`），**不依賴機器上裝了什麼字型**。代價是 render 時要能連外網
+抓字型檔；完全離線的機器要改成把 woff2 放進 `remotion/public/` 再用 `@remotion/fonts`
+的 `loadFont({family, url})` 指過去。
+
+> 早期版本寫死系統字型 `"Noto Sans TC Black"`，沒裝的機器會**靜默**退回
+> Microsoft JhengHei UI（沒有 Black 字重），章節標和強調字會變細、風格跑掉且不會報錯。
+> 現在不會了。
+
 ## 4. Kinocut MCP
 
 ```powershell
