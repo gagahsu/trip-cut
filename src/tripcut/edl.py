@@ -169,6 +169,8 @@ def build_props(
         """
         dst = public_dir / sub / p.name
         dst.parent.mkdir(parents=True, exist_ok=True)
+        if dst.exists() and not dst.samefile(p):
+            dst.unlink()
         if not dst.exists():
             try:
                 os.link(p, dst)

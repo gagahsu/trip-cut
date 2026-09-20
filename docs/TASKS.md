@@ -53,7 +53,9 @@
   - 直式 2720x1536 縮到長邊 1920 是 1084x1920（非 1080），Remotion cover 會切掉 2px，無視覺影響
 
 ## Phase 4 — 真實素材與打磨
-- [ ] 用一趟真實出遊素材跑情境 B 全流程，記錄卡點
+- [x] 用一趟真實出遊素材跑情境 B 全流程，記錄卡點（`2025-03-qimei`，見下方 Log；
+  過程中揪出三個先前都沒發現的 pipeline 正確性 bug：Kinocut trim 起點沒生效、
+  hard link 沒隨來源更新、背景孤兒行程搶檔案）
 - [ ] 跑情境 A（自備腳本）
 - [ ] 抽幀上限、scene 門檻、contact sheet 版面依實測調整
 - [ ] Claude 選片品質觀察：是否偏好某類畫面、是否漏掉短片段
@@ -112,3 +114,87 @@
   整體飽和 0.442、天空飽和 0.564 都是最佳。已加進 style.tsx / schema / STYLE-TEMPLATE §5
   / 範例 EDL / new-video-prompt。文件裡明確標註這組**不是量自樣本**，來源與 warm/cool 不同。
   判斷準則寫成「看天氣不是看植被」：晴天藍空→fresh、灰空下雨→warm（溪頭那趟就是）、雪地海→cool。
+- 2026-09-20：第三趟素材 `projects/2025-03-qimei`（台南奇美博物館都會公園，2025-03-29，
+  15 支影片 29.9 分鐘 13GB，**無照片**）。情境 B 全流程進行到一半，**中斷點記錄如下，
+  下次接續直接看這裡**：
+  - ingest/frames（v011 長片 11 分鐘手動補到 28 張）/transcribe 都跑完。
+  - `script.md` 草稿寫完，使用者確認 5 點：①v006-009 泡泡場景深色上衣是**菡媞**（長髮女孩）、
+    黃色系是**達達**，短髮粉色是**奈奈**；②沒有照片素材，收尾改用影片截幀模擬拍立得
+    （已存 `work/stills/p001.jpg`，並手動加進 `manifest.json` 當 `p001` photo 條目）；
+    ③保留原音，吵的鏡頭用 `keep_audio:false` 代替調音量（**pipeline 沒有 per-clip 音量
+    欄位**，用「不保留原音、靠 BGM 蓋過」逼近使用者要的「壓低音量」，非精確做法，
+    之後有需要可以補一個真正的 volume 欄位）；④BGM 從 Incompetech 篩了 **Life of Riley**
+    （60s 版）與 **Carpe Diem**（120s 版），已下載到 `work/bgm/`，標註寫在 `CREDITS.md`；
+    ⑤路人正臉用**挑鏡頭時避開**處理，**沒有**新增模糊功能（問過使用者，選了不做新功能）。
+  - `edl.json`（60s，25 段 59.85s）與 `edl-120.json`（120s，51 段 124.95s）都寫完、
+    `edl-validate` 通過。
+  - `tripcut clips`：**60s 版全部 25 個檔案已預裁完成**（`work/clips/`）。**120s 版只
+    完成 28/約 51 個**——背景執行到一半時，Claude Code 偵測到系統閒置記憶體吃緊，
+    自動把這個背景任務砍掉（不是指令本身的錯，是資源保護機制），使用者當下要去睡覺，
+    交代「先記錄，之後再繼續」。
+  - **下一步**：重新跑 `tripcut clips projects/2025-03-qimei --edl edl-120.json`
+    （會跳過已存在的 25 個重疊檔案，只補剩下的），跑完後依序：
+    `tripcut props`（兩版）→ Remotion render（`Montage`，兩版，`--public-dir` 記得指到
+    這個專案的 `work/public/`）→ `tripcut finish`（兩版，-14 LUFS + bt709）。
+  - 待確認的路人臉：目前 EDL 選的鏡頭都盡量避開清楚入鏡的路人，但**還沒有實際 render
+    出來目視檢查**，render 完要順便看一下有沒有漏網的路人臉。
+- 2026-09-20（續，使用者睡覺期間自動執行）：發現並修掉兩個會讓成品內容錯誤的坑，
+  render 卡在系統記憶體保護機制，**目前中斷點如下**：
+  - **孤兒 kino/uvx 行程同時寫入同一個檔案造成毀損**：先前中斷的 `tripcut clips` 背景
+    執行留下的子行程（`uvx --from kinocut kino`，非 `--mcp` 版本）沒有真的結束，
+    跟後續重跑的指令同時對同一批預裁檔輸出，導致約 17 個檔案 NAL unit 毀損
+    （`ffmpeg -f null -` 解碼會報錯）。用 `tasklist`/`wmic` 揪出這些孤兒行程
+    （命令列沒有 `--mcp`，跟 `.mcp.json` 啟動的 Kinocut MCP server 是兩碼事）
+    砍掉後才不再復發。**教訓：背景重跑同一個指令前一定要先確認舊的行程真的死了**
+    （用 `tasklist`／`wmic process get CommandLine` 查，不能只看 exit code）。
+  - **Kinocut `kino trim -s -e` 沒有真的裁切起點，整段變成從 0 剪到 `-e`**：
+    修完毀損後逐一比對「EDL 的 out-in 應有長度」vs `ffprobe` 實際長度，
+    發現幾乎所有走過 Kinocut trim 的檔案（不只失敗退 ffmpeg 的那些）長度都是錯的
+    ——實際長度等於 `-e` 的值，代表 `-s` 被忽略、從頭開始剪。這是先前 Phase 3/4
+    都沒抓到的 pipeline 正確性問題，不是這趟才有。**已把 `projects/2025-03-qimei/
+    work/clips/` 全部刪除，用 `tripcut clips --no-kino --force` 重新產生（兩版
+    共 75 段 clip 參照），並寫腳本核對每段 `ffprobe` 長度誤差 <0.35s + 解碼零錯誤，
+    全部通過**。**待辦：`clips.py` 的 `_trim_kino`／ADR-008 需要回頭確認 Kinocut
+    trim 指令的正確參數語意（可能是 `-e` 要改成 duration 而不是絕對結束時間，或
+    有其他旗標），在修好前 Kinocut trim 路徑不可信，`--no-kino` 是唯一可用路徑。**
+  - 兩版 `props.json`／`props-120.json` 已用乾淨的 clips 重新產生。
+  - **120s Remotion render 執行到一半（約 1/3）被系統記憶體保護機制砍掉**（跟
+    2026-09-19 log 提到的 `tripcut clips` 那次一樣的機制，這次是 render）。
+    砍掉後發現 8 個 `chrome-headless-shell.exe` 子行程（每個 400MB+）變成孤兒
+    繼續占記憶體，已手動 `taskkill` 清乾淨。**依系統指示，記憶體保護砍掉的背景
+    工作不可自行重啟**，所以停在這裡沒有再次嘗試 render。
+  - **下一步（使用者醒來後）**：確認目前記憶體狀況足夠後，重新跑
+    `cd remotion && npx remotion render Montage ../projects/2025-03-qimei/out/2025-03-qimei-120s.mp4
+    --props=../projects/2025-03-qimei/props-120.json --public-dir=../projects/2025-03-qimei/work/public`，
+    完成後依序跑 60s 版（同指令換 `props.json`／輸出檔名），
+    再兩版都跑 `tripcut finish`（-14 LUFS + bt709）與品檢（blackdetect + 抽格 sheet 目視）。
+    `out/` 目前是空的，兩版都還沒有成品。
+- 2026-09-20（續，完成）：使用者稍後明確要求「自行完成」，已恢復自動執行，
+  **兩版都成功出片**，把過程中發現的第三個坑也修掉了：
+  - 確認可用記憶體回升到 ~6.9GB 後，重試 render，但**同一個問題（v008 那段）又
+    在完全相同的位置炸掉**——這次已知 `work/clips/` 裡的來源檔案本身沒問題（duration/
+    解碼都驗證過），所以懷疑是 `work/public/clips/`（Remotion 實際讀取的 hard link
+    副本）沒同步更新。查證發現 `edl.py:172` 的 `rel()` 函式寫 `if not dst.exists():
+    os.link(...)`——**只要 hard link 目的檔已存在就永遠不會更新**，就算來源內容
+    已經換了新的 inode 也一樣，所以先前所有清掉重建 `work/clips/` 的努力都沒有真正
+    傳到 render 會讀的地方。**這是繼「Kinocut trim -s 沒生效」之後第三個
+    pipeline 正確性 bug，同樣不是這趟才有——只要重跑過 `tripcut clips` 覆蓋舊檔，
+    render 用的都可能是舊內容。** 已修好 `rel()`：先比對 `dst.samefile(p)`，
+    不同才刪掉重連。清空 `work/public/` 重跑兩版 `tripcut props`，重新核對
+    `work/public/clips/` 75 段全部通過後，render 才真正成功。
+  - **成品**：`out/2025-03-qimei-120s.mp4`（658.7 MB）／`out/2025-03-qimei-60s.mp4`
+    （333.9 MB），`tripcut finish` 收尾後 `out/2025-03-qimei-120s-share.mp4`
+    （289.9 MB，-14.0 LUFS／LRA 5.7／TP -1.0 dBFS／bt709）與
+    `out/2025-03-qimei-60s-share.mp4`（151.6 MB，-14.1 LUFS／LRA 5.6／TP -0.9 dBFS／
+    bt709）。
+  - 品檢：兩版 `blackdetect=d=0.1:pic_th=0.98` 都零異常；`work/qc/sheet-120s.jpg`／
+    `sheet-60s.jpg`（每 4 秒抽格拼圖）目視過，字卡／地標膠囊／片尾拍立得都正常
+    渲染，色調符合 `fresh` preset 的晴天綠地設定；v011 那段長片裡出現的路人都是
+    背影或遠景，沒有清楚入鏡的正臉，符合腳本確認時「挑鏡頭時避開」的做法。
+  - **待辦回填**（下次有空再處理，不影響這趟出片）：
+    1. `clips.py` 的 `_trim_kino` 要查 Kinocut 官方文件確認 `trim -s/-e` 正確語意
+       後修好，目前 Kinocut trim 路徑整個不可信，只能靠 `--no-kino`；
+    2. 背景執行同一支 `tripcut clips`／render 指令前，養成先 `tasklist` 確認舊行程
+       真的死了的習慣，這趟因為孤兒行程同時寫檔弄壞了 ~17 個預裁檔；
+    3. 系統記憶體保護砍掉背景工作後，若底下有 `chrome-headless-shell.exe` 之類的
+       子行程沒有跟著死掉，要手動 `taskkill` 清乾淨，不然記憶體不會真的釋放。
